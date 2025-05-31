@@ -6,7 +6,7 @@ const int audioPin4 = 19;
 const int signalPin = 21;
 
 const int buttonPin1 = 13;
-const int buttonPin2 = 12;
+const int buttonPin2 = 14;
 const int buttonPin3 = 27;
 const int buttonPin4 = 26;
 
