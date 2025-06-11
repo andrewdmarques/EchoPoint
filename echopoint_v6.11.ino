@@ -41,7 +41,7 @@ void setup() {
   digitalWrite(audioPin4, HIGH);
   digitalWrite(signalPin, HIGH);  // Critical signal pin HIGH
 
-  delay(200);  // Small hardware stabilization time
+  delay(250);  // Small hardware stabilization time
 
   // If a button was detected early, trigger corresponding audio
   if (initialPressed == 1) pulsePin(audioPin1);
