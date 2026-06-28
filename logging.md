@@ -1,12 +1,11 @@
 # To Do
-- [ ] which micro-controller should use, are there conflicts having multiple power sources?
-- [ ] where/how to power logging system
-- [ ] reasonable way to set the clock
-- [ ] code to get time off the clock
+- [x] which micro-controller should use, are there conflicts having multiple power sources?
+  - replace the main controller, or flash with new firmware 
+- [x] where/how to power logging system
+  - [x] power off ESP32
+  - [x] switch to rechargable LIR3023 for RTC
+- [x] reasonable way to set the clock
+  - The time is set at compile/flash time, so you need to compile/flash, then re-seat the clock battery.
+- [x] code to get time off the clock
 - [ ] log which button was pressed and when
-- [ ] code/logic to log to SD card
-- [ ] 
-
-
-# 2.0
-- [ ] could we track the voltage/charge on the battery(s)
+- [x] code/logic to log to SD card
