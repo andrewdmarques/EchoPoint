@@ -16,9 +16,12 @@ const int chipSelect = 3;
 // Pin definitions
 const int audioPin1 = 4;
 const int audioPin2 = 5;
-const int audioPin3 = 18;
-const int audioPin4 = 19;
-const int signalPin = 21;
+// 18 -> 2
+const int audioPin3 = 2;
+// 19 -> 16
+const int audioPin4 = 16;
+// 21 -> 17
+const int signalPin = 17;
 
 const int buttonPin1 = 13;
 const int buttonPin2 = 14;
@@ -58,7 +61,7 @@ void setup() {
 
   delay(250);  // Small hardware stabilization time
 
-  // init clock  
+  // init clock
   rtc.begin();
   if (rtc.lostPower()) {
     // This ONLY runs if the clock completely lost power/battery
@@ -142,4 +145,3 @@ void logButtonPressed(int buttonIndex) {
     file.close();
   }
 }
-

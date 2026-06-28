@@ -7,5 +7,6 @@
 - [x] reasonable way to set the clock
   - The time is set at compile/flash time, so you need to compile/flash, then re-seat the clock battery.
 - [x] code to get time off the clock
-- [ ] log which button was pressed and when
+- [x] log which button was pressed and when
 - [x] code/logic to log to SD card
+- [x] document what pins to move where
