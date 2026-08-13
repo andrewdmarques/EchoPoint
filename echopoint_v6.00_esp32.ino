@@ -3,13 +3,14 @@
 // ============================================================
 
 // Edited 2026-08-13 originally for the Boyertown Historical Vehicle Museum
+
 // Button inputs
 // Buttons are externally pulled LOW.
 // Pressing a button should bring the corresponding pin HIGH.
 const int button1Pin = 32; // Brown to bread board
 const int button2Pin = 33; // Red to bread board
 const int button3Pin = 34; // Orange to bread board
-const int button4Pin = 35; // Yellow to bead board
+const int button4Pin = 35; // Yellow to bread board
 
 // Outputs to audio board
 const int audioPin1 = 18; // Yellow to audio board
@@ -77,7 +78,12 @@ void setup() {
 
 void loop() {
 
-  // Read the state of each button
+  // Read the state of each button ONCE at the beginning of the loop.
+  //
+  // Important:
+  // On the first loop, these values are intentionally retained
+  // through the 500 ms sound-board startup delay. This matches
+  // the behavior of the original NodeMCU code.
   int button1State = digitalRead(button1Pin);
   int button2State = digitalRead(button2Pin);
   int button3State = digitalRead(button3Pin);
@@ -88,11 +94,16 @@ void loop() {
   // First loop
   //
   // Give the sound board time to boot before triggering audio.
+  //
+  // The button states are NOT read again after the delay.
+  // If a button was detected HIGH when this loop began, that
+  // press is remembered and sent to the sound board after the
+  // startup delay.
   // ==========================================================
 
   if (firstRun) {
 
-    // Keep all audio outputs inactive
+    // Keep all audio outputs inactive while the sound board boots
     digitalWrite(audioPin1, HIGH);
     digitalWrite(audioPin2, HIGH);
     digitalWrite(audioPin3, HIGH);
@@ -100,62 +111,80 @@ void loop() {
 
     delay(500);
 
-    // Read buttons again AFTER the startup delay
-    // so we respond to their current state.
-    button1State = digitalRead(button1Pin);
-    button2State = digitalRead(button2Pin);
-    button3State = digitalRead(button3Pin);
-    button4State = digitalRead(button4Pin);
+
+    // ----------------------------------------------------------
+    // Display the button states that were captured BEFORE
+    // the startup delay
+    // ----------------------------------------------------------
 
     Serial.println("First loop");
+
     Serial.print("Button 1: ");
     Serial.println(button1State);
+
     Serial.print("Button 2: ");
     Serial.println(button2State);
+
     Serial.print("Button 3: ");
     Serial.println(button3State);
+
     Serial.print("Button 4: ");
     Serial.println(button4State);
+
 
     firstRun = false;
 
 
     // --------------------------------------------------------
-    // Trigger one audio channel if a button is already pressed
+    // Trigger one audio channel if a button was detected
+    // when the first loop began.
+    //
+    // The LOW pulse lasts 100 ms.
     // --------------------------------------------------------
 
     if (button1State == HIGH) {
 
       digitalWrite(audioPin1, LOW);
       Serial.println("Audio pin 1 triggered.");
+
       delay(100);
+
       digitalWrite(audioPin1, HIGH);
 
       lastButtonPressTime = millis();
+
 
     } else if (button2State == HIGH) {
 
       digitalWrite(audioPin2, LOW);
       Serial.println("Audio pin 2 triggered.");
+
       delay(100);
+
       digitalWrite(audioPin2, HIGH);
 
       lastButtonPressTime = millis();
+
 
     } else if (button3State == HIGH) {
 
       digitalWrite(audioPin3, LOW);
       Serial.println("Audio pin 3 triggered.");
+
       delay(100);
+
       digitalWrite(audioPin3, HIGH);
 
       lastButtonPressTime = millis();
+
 
     } else if (button4State == HIGH) {
 
       digitalWrite(audioPin4, LOW);
       Serial.println("Audio pin 4 triggered.");
+
       delay(100);
+
       digitalWrite(audioPin4, HIGH);
 
       lastButtonPressTime = millis();
@@ -169,11 +198,18 @@ void loop() {
     // ========================================================
 
 
+    // --------------------------------------------------------
     // Button 1
+    // --------------------------------------------------------
+
     if (button1State == HIGH) {
 
       digitalWrite(audioPin1, LOW);
-      Serial.println("Audio pin 1 set LOW because button 1 is HIGH.");
+
+      Serial.println(
+        "Audio pin 1 set LOW because button 1 is HIGH."
+      );
+
       lastButtonPressTime = millis();
 
     } else {
@@ -182,11 +218,18 @@ void loop() {
     }
 
 
+    // --------------------------------------------------------
     // Button 2
+    // --------------------------------------------------------
+
     if (button2State == HIGH) {
 
       digitalWrite(audioPin2, LOW);
-      Serial.println("Audio pin 2 set LOW because button 2 is HIGH.");
+
+      Serial.println(
+        "Audio pin 2 set LOW because button 2 is HIGH."
+      );
+
       lastButtonPressTime = millis();
 
     } else {
@@ -195,11 +238,18 @@ void loop() {
     }
 
 
+    // --------------------------------------------------------
     // Button 3
+    // --------------------------------------------------------
+
     if (button3State == HIGH) {
 
       digitalWrite(audioPin3, LOW);
-      Serial.println("Audio pin 3 set LOW because button 3 is HIGH.");
+
+      Serial.println(
+        "Audio pin 3 set LOW because button 3 is HIGH."
+      );
+
       lastButtonPressTime = millis();
 
     } else {
@@ -208,11 +258,18 @@ void loop() {
     }
 
 
+    // --------------------------------------------------------
     // Button 4
+    // --------------------------------------------------------
+
     if (button4State == HIGH) {
 
       digitalWrite(audioPin4, LOW);
-      Serial.println("Audio pin 4 set LOW because button 4 is HIGH.");
+
+      Serial.println(
+        "Audio pin 4 set LOW because button 4 is HIGH."
+      );
+
       lastButtonPressTime = millis();
 
     } else {
