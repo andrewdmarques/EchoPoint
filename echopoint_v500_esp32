@@ -1,0 +1,243 @@
+// ============================================================
+// ESP32 pin assignments
+// ============================================================
+
+// Edited 2026-08-13 originally for the Boyertown Historical Vehicle Museum
+// Button inputs
+// Buttons are externally pulled LOW.
+// Pressing a button should bring the corresponding pin HIGH.
+const int button1Pin = 32; // Brown to bread board
+const int button2Pin = 33; // Red to bread board
+const int button3Pin = 34; // Orange to bread board
+const int button4Pin = 35; // Yellow to bead board
+
+// Outputs to audio board
+const int audioPin1 = 18; // Yellow to audio board
+const int audioPin2 = 19; // Green to audio board
+const int audioPin3 = 21; // Blue to audio board
+const int audioPin4 = 22; // Purple to audio board
+
+// Signal output
+const int signalPin = 23; // Grey to bread board
+
+
+// Variable to keep track of the last time a button was pressed
+unsigned long lastButtonPressTime = 0;
+
+// Variable to check if it's the first time the loop is running
+bool firstRun = true;
+
+
+void setup() {
+
+  // Start serial communication
+  Serial.begin(9600);
+
+  // ----------------------------------------------------------
+  // Signal pin
+  // ----------------------------------------------------------
+
+  pinMode(signalPin, OUTPUT);
+  digitalWrite(signalPin, HIGH);
+
+
+  // ----------------------------------------------------------
+  // Button inputs
+  //
+  // These use INPUT rather than INPUT_PULLDOWN because the
+  // buttons are already externally pulled LOW.
+  // ----------------------------------------------------------
+
+  pinMode(button1Pin, INPUT);
+  pinMode(button2Pin, INPUT);
+  pinMode(button3Pin, INPUT);
+  pinMode(button4Pin, INPUT);
+
+
+  // ----------------------------------------------------------
+  // Audio outputs
+  // ----------------------------------------------------------
+
+  pinMode(audioPin1, OUTPUT);
+  pinMode(audioPin2, OUTPUT);
+  pinMode(audioPin3, OUTPUT);
+  pinMode(audioPin4, OUTPUT);
+
+  // Audio triggers are inactive HIGH
+  digitalWrite(audioPin1, HIGH);
+  digitalWrite(audioPin2, HIGH);
+  digitalWrite(audioPin3, HIGH);
+  digitalWrite(audioPin4, HIGH);
+
+
+  // Initialize inactivity timer
+  lastButtonPressTime = millis();
+}
+
+
+void loop() {
+
+  // Read the state of each button
+  int button1State = digitalRead(button1Pin);
+  int button2State = digitalRead(button2Pin);
+  int button3State = digitalRead(button3Pin);
+  int button4State = digitalRead(button4Pin);
+
+
+  // ==========================================================
+  // First loop
+  //
+  // Give the sound board time to boot before triggering audio.
+  // ==========================================================
+
+  if (firstRun) {
+
+    // Keep all audio outputs inactive
+    digitalWrite(audioPin1, HIGH);
+    digitalWrite(audioPin2, HIGH);
+    digitalWrite(audioPin3, HIGH);
+    digitalWrite(audioPin4, HIGH);
+
+    delay(500);
+
+    // Read buttons again AFTER the startup delay
+    // so we respond to their current state.
+    button1State = digitalRead(button1Pin);
+    button2State = digitalRead(button2Pin);
+    button3State = digitalRead(button3Pin);
+    button4State = digitalRead(button4Pin);
+
+    Serial.println("First loop");
+    Serial.print("Button 1: ");
+    Serial.println(button1State);
+    Serial.print("Button 2: ");
+    Serial.println(button2State);
+    Serial.print("Button 3: ");
+    Serial.println(button3State);
+    Serial.print("Button 4: ");
+    Serial.println(button4State);
+
+    firstRun = false;
+
+
+    // --------------------------------------------------------
+    // Trigger one audio channel if a button is already pressed
+    // --------------------------------------------------------
+
+    if (button1State == HIGH) {
+
+      digitalWrite(audioPin1, LOW);
+      Serial.println("Audio pin 1 triggered.");
+      delay(100);
+      digitalWrite(audioPin1, HIGH);
+
+      lastButtonPressTime = millis();
+
+    } else if (button2State == HIGH) {
+
+      digitalWrite(audioPin2, LOW);
+      Serial.println("Audio pin 2 triggered.");
+      delay(100);
+      digitalWrite(audioPin2, HIGH);
+
+      lastButtonPressTime = millis();
+
+    } else if (button3State == HIGH) {
+
+      digitalWrite(audioPin3, LOW);
+      Serial.println("Audio pin 3 triggered.");
+      delay(100);
+      digitalWrite(audioPin3, HIGH);
+
+      lastButtonPressTime = millis();
+
+    } else if (button4State == HIGH) {
+
+      digitalWrite(audioPin4, LOW);
+      Serial.println("Audio pin 4 triggered.");
+      delay(100);
+      digitalWrite(audioPin4, HIGH);
+
+      lastButtonPressTime = millis();
+    }
+
+
+  } else {
+
+    // ========================================================
+    // Normal operation
+    // ========================================================
+
+
+    // Button 1
+    if (button1State == HIGH) {
+
+      digitalWrite(audioPin1, LOW);
+      Serial.println("Audio pin 1 set LOW because button 1 is HIGH.");
+      lastButtonPressTime = millis();
+
+    } else {
+
+      digitalWrite(audioPin1, HIGH);
+    }
+
+
+    // Button 2
+    if (button2State == HIGH) {
+
+      digitalWrite(audioPin2, LOW);
+      Serial.println("Audio pin 2 set LOW because button 2 is HIGH.");
+      lastButtonPressTime = millis();
+
+    } else {
+
+      digitalWrite(audioPin2, HIGH);
+    }
+
+
+    // Button 3
+    if (button3State == HIGH) {
+
+      digitalWrite(audioPin3, LOW);
+      Serial.println("Audio pin 3 set LOW because button 3 is HIGH.");
+      lastButtonPressTime = millis();
+
+    } else {
+
+      digitalWrite(audioPin3, HIGH);
+    }
+
+
+    // Button 4
+    if (button4State == HIGH) {
+
+      digitalWrite(audioPin4, LOW);
+      Serial.println("Audio pin 4 set LOW because button 4 is HIGH.");
+      lastButtonPressTime = millis();
+
+    } else {
+
+      digitalWrite(audioPin4, HIGH);
+    }
+
+
+    // ========================================================
+    // Inactivity signal
+    //
+    // 120000 ms = 120 seconds = 2 minutes
+    // ========================================================
+
+    if (millis() - lastButtonPressTime > 120000) {
+
+      digitalWrite(signalPin, LOW);
+
+    } else {
+
+      digitalWrite(signalPin, HIGH);
+    }
+  }
+
+
+  // Small delay to prevent flooding serial output
+  delay(50);
+}
